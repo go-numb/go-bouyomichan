@@ -2,7 +2,7 @@
 
 ## Require
 - Go
-- 棒読みちゃん
+- [棒読みちゃん](https://chi.usamimi.info/Program/Application/BouyomiChan/)
 
 ## Usage
 ```go
