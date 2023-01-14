@@ -69,6 +69,7 @@ func (p *Client) Speaking(msg string) error {
 	if err != nil {
 		return err
 	}
+	defer conn.Close()
 
 	_, err = conn.Write(
 		verbalizing(
