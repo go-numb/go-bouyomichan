@@ -29,12 +29,20 @@ var (
 )
 
 func main() {
-    bouyomi := bouyomichan.New()
-    defer bouyomi.Close()
+	client := bouyomichan.New("localhost:50001")
 
-	for i := 0; i < len(messages); i++ {
-		bouyomi.Speaking(messages[i])
-		time.Sleep(time.Second)
+	for i, v := range messages {
+		switch i {
+		case 1:
+			client.Voice = VoiceMan01
+
+		case 2:
+			client.Voice = VoiceNeutral
+		}
+
+		if err := client.Speaking(v); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 ```

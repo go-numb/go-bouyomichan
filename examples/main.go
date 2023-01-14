@@ -1,9 +1,9 @@
 package main
 
 import (
-	"time"
+	"log"
 
-	"github.com/go-numb/go-bouyomichan"
+	bouyomichan "github.com/go-numb/go-bouyomichan"
 )
 
 var (
@@ -22,12 +22,10 @@ var (
 )
 
 func main() {
-	bouyomi := bouyomichan.New()
-	defer bouyomi.Close()
-
 	for i := 0; i < len(messages); i++ {
-		bouyomi.Speaking(messages[i])
-		time.Sleep(time.Second)
+		client := bouyomichan.New("localhost:50001")
+		if err := client.Speaking(messages[i]); err != nil {
+			log.Fatal(err)
+		}
 	}
-
 }
