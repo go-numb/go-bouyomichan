@@ -64,6 +64,7 @@ func New(addr string) *Client {
 }
 
 // Speaking ローカルなりに棒読みちゃんアプリが立ち上げられ、かつ、設定のアプリケーション連携がTrue担っていることが前提
+// 棒読みちゃんからEOFが返ってくるため常々接続
 func (p *Client) Speaking(msg string) error {
 	conn, err := net.Dial("tcp", p.addr)
 	if err != nil {
