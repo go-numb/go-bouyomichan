@@ -2,7 +2,7 @@ package bouyomichan
 
 import (
 	"encoding/binary"
-	"fmt"
+	"log"
 	"net"
 )
 
@@ -78,8 +78,15 @@ func (p *Client) Speaking(msg string) error {
 		),
 	)
 	if err != nil {
-		fmt.Println("error", err)
+		log.Println("[ERROR] ", err)
 		return err
+	}
+
+	// READ EOF
+	var buf = make([]byte, 16)
+	n, _ := conn.Read(buf)
+	if n != 0 {
+		log.Println("[INFO] READ: ", n, buf)
 	}
 
 	return nil
@@ -94,10 +101,9 @@ func verbalizing(message []byte, speed, tone, volume int16, voice Voices, bcode 
 	// var iCommand int16 = int16(1)
 	// var d = make([]byte, 2)
 	// binary.BigEndian.PutUint16(d, uint16(iCommand))
-	// fmt.Println("command: ", d)
+	// log.Println("command: ", d)
 
 	d := []byte{1, 0}
-	fmt.Println("command: ", d)
 
 	var tmp = make([]byte, 2)
 	if speed != -1 && speed < 50 || speed > 300 {
@@ -105,40 +111,30 @@ func verbalizing(message []byte, speed, tone, volume int16, voice Voices, bcode 
 	}
 	binary.LittleEndian.PutUint16(tmp, uint16(speed))
 	d = append(d, tmp...)
-	fmt.Println("speed: ", tmp)
 
 	if tone != -1 && tone < 50 || tone > 200 {
 		tone = -1
 	}
 	binary.LittleEndian.PutUint16(tmp, uint16(tone))
 	d = append(d, tmp...)
-	fmt.Println("tone: ", tmp)
 
 	if volume != -1 && volume < -1 || volume > 100 {
 		volume = -1
 	}
 	binary.LittleEndian.PutUint16(tmp, uint16(volume))
 	d = append(d, tmp...)
-	fmt.Println("volume: ", tmp)
 
 	binary.LittleEndian.PutUint16(tmp, uint16(voice))
 	d = append(d, tmp...)
-	fmt.Println("voice: ", tmp)
 
 	binary.BigEndian.PutUint16(tmp, uint16(bcode))
 	d = append(d, tmp[1])
-	fmt.Println("bcode: ", tmp[1])
-
-	// [1 0 100 0 255 255 255 255 0 0 0]
-	// [0 0 100 0 100 0 100 0 1 0 0]
-	fmt.Printf("%v\n", d)
 
 	bMsglength := make([]byte, 4)
 	binary.LittleEndian.PutUint32(bMsglength, msg_length)
 
 	d = append(d, bMsglength...)
 	d = append(d, []byte(msg)...)
-	fmt.Println(string(d))
 
 	return d
 }
