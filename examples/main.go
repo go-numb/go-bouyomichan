@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/go-numb/bouyomichan"
+	"github.com/go-numb/go-bouyomichan"
 )
 
 var (
