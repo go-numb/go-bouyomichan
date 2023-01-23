@@ -1,4 +1,4 @@
-module bouyomichan
+module github.com/go-numb/bouyomichan
 
 go 1.19
 
