@@ -1,6 +1,7 @@
 package bouyomichan
 
 import (
+	"bytes"
 	"encoding/binary"
 	"log"
 	"net"
@@ -137,4 +138,34 @@ func verbalizing(message []byte, speed, tone, volume int16, voice Voices, bcode 
 	d = append(d, []byte(msg)...)
 
 	return d
+}
+
+func (p *Client) IsNowPlayng() bool {
+	conn, err := net.Dial("tcp", p.addr)
+	if err != nil {
+		return false
+	}
+	defer conn.Close()
+
+	var tmp = make([]byte, 2)
+	binary.LittleEndian.PutUint16(tmp, uint16(288))
+	_, err = conn.Write(
+		tmp,
+	)
+	if err != nil {
+		log.Println("[ERROR] ", err)
+		return false
+	}
+
+	// READ EOF
+	var buf = make([]byte, 16)
+	n, _ := conn.Read(buf)
+	temp := bytes.NewBuffer(buf[:n]) // b is []byte
+	result, _ := binary.ReadVarint(temp)
+	if result != 0 {
+		log.Println("[INFO] Now playng: ", n, result)
+		return true
+	}
+
+	return false
 }

@@ -2,7 +2,10 @@ module github.com/go-numb/go-bouyomichan
 
 go 1.19
 
-require github.com/gocolly/colly/v2 v2.1.0
+require (
+	github.com/gocarina/gocsv v0.0.0-20221216233619-1fea7ae8d380
+	github.com/gocolly/colly/v2 v2.1.0
+)
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect

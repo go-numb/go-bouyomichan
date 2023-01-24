@@ -1,6 +1,7 @@
 package bouyomichan
 
 import (
+	"fmt"
 	"log"
 	"testing"
 	"time"
@@ -29,6 +30,16 @@ func TestSpeeking(t *testing.T) {
 		if err := client.Speaking(v); err != nil {
 			log.Fatal(err)
 		}
+
+		for {
+			if client.IsNowPlayng() {
+				fmt.Println("wait...")
+				time.Sleep(time.Second)
+				continue
+			}
+			break
+		}
+		fmt.Println("next")
 	}
 }
 
