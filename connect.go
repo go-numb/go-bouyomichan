@@ -3,6 +3,7 @@ package bouyomichan
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"log"
 	"net"
 )
@@ -168,4 +169,60 @@ func (p *Client) IsNowPlayng() bool {
 	}
 
 	return false
+}
+
+func (p *Client) Pause() error {
+	conn, err := net.Dial("tcp", p.addr)
+	if err != nil {
+		return nil
+	}
+	defer conn.Close()
+
+	var tmp = make([]byte, 2)
+	binary.LittleEndian.PutUint16(tmp, uint16(272))
+	_, err = conn.Write(
+		tmp,
+	)
+	if err != nil {
+		return fmt.Errorf("[ERROR] %v", err)
+	}
+
+	// READ EOF
+	var buf = make([]byte, 16)
+	n, _ := conn.Read(buf)
+	temp := bytes.NewBuffer(buf[:n]) // b is []byte
+	result, _ := binary.ReadVarint(temp)
+	if result != 0 {
+		return fmt.Errorf("[INFO] Pause: %d, %v", n, result)
+	}
+
+	return nil
+}
+
+func (p *Client) Stop() error {
+	conn, err := net.Dial("tcp", p.addr)
+	if err != nil {
+		return nil
+	}
+	defer conn.Close()
+
+	var tmp = make([]byte, 2)
+	binary.LittleEndian.PutUint16(tmp, uint16(64))
+	_, err = conn.Write(
+		tmp,
+	)
+	if err != nil {
+		return fmt.Errorf("[ERROR] %v", err)
+	}
+
+	// READ EOF
+	var buf = make([]byte, 16)
+	n, _ := conn.Read(buf)
+	temp := bytes.NewBuffer(buf[:n]) // b is []byte
+	result, _ := binary.ReadVarint(temp)
+	if result != 0 {
+		return fmt.Errorf("[INFO] Stop: %d, %v", n, result)
+	}
+
+	return nil
 }
